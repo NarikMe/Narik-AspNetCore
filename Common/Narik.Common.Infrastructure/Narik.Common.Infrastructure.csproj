@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup Label="Globals">
+    <SccProjectName>SAK</SccProjectName>
+    <SccProvider>SAK</SccProvider>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccLocalPath>SAK</SccLocalPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.0.0.2</AssemblyVersion>
+    <FileVersion>1.0.0.2</FileVersion>
+    <Version>1.0.2</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommonServiceLocator" Version="2.0.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+    <PackageReference Include="Unity.Abstractions" Version="4.0.3" />
+    <PackageReference Include="Unity.Container" Version="5.9.5" />
+    <PackageReference Include="Unity.RegistrationByConvention" Version="5.9.1" />
+    <PackageReference Include="Unity.ServiceLocation" Version="5.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Narik.Common.Data\Narik.Common.Data.csproj" />
+    <ProjectReference Include="..\Narik.Common.Services\Narik.Common.Services.csproj" />
+    <ProjectReference Include="..\Narik.Common.Shared\Narik.Common.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.SignalR">
+      <HintPath>C:\Users\ali\.nuget\packages\microsoft.aspnetcore.signalr\1.0.4\lib\netstandard2.0\Microsoft.AspNetCore.SignalR.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
