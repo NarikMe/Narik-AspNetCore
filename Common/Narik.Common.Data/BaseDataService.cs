@@ -87,7 +87,7 @@ namespace Narik.Common.Data
         protected virtual DbContextOptions<TContext> GetDbContextOptions()
         {
             var opt = new DbContextOptionsBuilder<TContext>();
-            var connectionStringName = _config.ConenctionStringKey ?? "DbContextDB";
+            var connectionStringName = _config.ConnectionStringKey ?? "DbContextDB";
             opt.UseSqlServer(Configuration[$"ConnectionString:{connectionStringName}"]);
             return opt.Options;
         }

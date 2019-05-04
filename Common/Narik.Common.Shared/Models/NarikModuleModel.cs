@@ -35,8 +35,8 @@ namespace Narik.Common.Shared.Models
         [JsonProperty("odataMaxTop")]
         public int? OdataMaxTop { get; set; }
 
-        [JsonProperty("conenctionStringKey")]
-        public string ConenctionStringKey { get; set; }
+        [JsonProperty("connectionStringKey")]
+        public string ConnectionStringKey { get; set; }
 
         [JsonProperty("apiPrefixes")]
         public string ApiPrefixes { get; set; }
