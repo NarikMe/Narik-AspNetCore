@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup Label="Globals">
     <SccProjectName>SAK</SccProjectName>
@@ -12,16 +12,17 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/NarikMe/Narik-AspNetCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/16729513?s=400&amp;v=4</PackageIconUrl>
-    <PackageTags>narik</PackageTags>
+    <PackageTags>Narik</PackageTags>
     <RepositoryUrl>https://github.com/NarikMe/Narik-AspNetCore</RepositoryUrl>
     <Description>Nerik Application Block For .Net Core</Description>
     <Company>Narik</Company>
     <Product>Narik</Product>
     <RepositoryType>Github</RepositoryType>
     <PackageLicenseUrl>https://github.com/NarikMe/Narik-AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.0.0.3</AssemblyVersion>
-    <FileVersion>1.0.0.3</FileVersion>
-    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.0.12</AssemblyVersion>
+    <FileVersion>1.0.0.12</FileVersion>
+    <Version>1.0.12</Version>
+    <Authors>Narik</Authors>
   </PropertyGroup>
 
   <ItemGroup>
