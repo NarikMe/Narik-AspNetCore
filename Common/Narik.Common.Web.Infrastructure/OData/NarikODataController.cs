@@ -139,12 +139,18 @@ namespace Narik.Common.Web.Infrastructure.OData
             }));
 
 
+            var error = await DoBeforeDeleteAsync(changes);
+
+            if (!string.IsNullOrEmpty(error))
+                return Error(error);
+
             var dbChanges = MapChangesToDbChanges(null, changes);
 
             var result = await SubmitChanges(dbChanges);
             if (result is ObjectResult objectResult &&
                 ((ServerResponse<TViewModel>)objectResult.Value).IsSucceed)
             {
+                await DoAfterDeleteSuccessAsync(changes);
                 return Ok(result);
             }
             return BadRequest(result);
@@ -155,13 +161,13 @@ namespace Narik.Common.Web.Infrastructure.OData
 
 
 
-        protected virtual bool DoBeforeDelete(ChangeSet changes)
+        protected virtual async Task<string> DoBeforeDeleteAsync(List<ChangeSetEntry> changes)
         {
-            return true;
+            return await Task.FromResult<string>(null);
         }
-        protected virtual void DoAfterDeleteSuccess(List<T> entities)
+        protected virtual async Task<bool>  DoAfterDeleteSuccessAsync(List<ChangeSetEntry> changes)
         {
-
+            return await Task.FromResult(true);
         }
         public virtual async Task<IActionResult> Get(TKey key, ODataQueryOptions<TViewModel> queryOptions)
         {
