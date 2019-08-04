@@ -8,8 +8,8 @@ namespace Narik.Common.Shared.Models
         [JsonProperty("key")]
         public string Key { get; set; }
 
-        [JsonProperty("assemeblyName")]
-        public string AssemeblyName { get; set; }
+        [JsonProperty("assemblyName")]
+        public string AssemblyName { get; set; }
 
         [JsonProperty("initOrder")]
         public int InitOrder { get; set; }
@@ -18,7 +18,7 @@ namespace Narik.Common.Shared.Models
     public class NarikModulesConfig
     {
         [JsonProperty("modules")]
-        public NarikModuleModel[] modules { get; set; }
+        public NarikModuleModel[] Modules { get; set; }
 
         [JsonProperty("secret")]
         public string Secret { get; set; }
@@ -26,8 +26,8 @@ namespace Narik.Common.Shared.Models
         [JsonProperty("useCamelCase")]
         public bool? UseCamelCase { get; set; }
 
-        [JsonProperty("addDefaultAuthorizeFilter")]
-        public bool? AddDefaultAuthorizeFilter { get; set; }
+        [JsonProperty("addDefaultAuthenticationPolicy")]
+        public bool? AddDefaultAuthenticationPolicy { get; set; }
 
         [JsonProperty("authenticationMode")]
         public string AuthenticationMode { get; set; }

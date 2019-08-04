@@ -54,20 +54,20 @@ namespace Narik.Common.Infrastructure.Service
             var narikModuleConfig = new NarikModulesConfig();
             _configuration.GetSection("NarikModulesConfig").Bind(narikModuleConfig);
 
-            AvaialbleModules = narikModuleConfig.modules.OfType<INarikModuleModel>().ToList();
+            AvaialbleModules = narikModuleConfig.Modules.OfType<INarikModuleModel>().ToList();
 
             var runTimeAssemblyPath = Path.Combine(_environment.AppRoot, @"Narik.Modules.Runtime.dll");
             if (!File.Exists(runTimeAssemblyPath))
-                throw new Exception(string.Format("Module Runtime Not Found in {0}", runTimeAssemblyPath));
+                throw new Exception($"'Runtime Module'  Not Found in {runTimeAssemblyPath}");
             //Load Runtime
             System.Runtime.Loader.AssemblyLoadContext.Default
                 .LoadFromAssemblyPath(runTimeAssemblyPath);
 
-            if (narikModuleConfig.modules!=null)
-                foreach (var narikModuleModel in narikModuleConfig.modules)
+            if (narikModuleConfig.Modules!=null)
+                foreach (var narikModuleModel in narikModuleConfig.Modules)
                 {
                     System.Runtime.Loader.AssemblyLoadContext.Default
-                        .LoadFromAssemblyPath(Path.Combine(_environment.AppRoot, narikModuleModel.AssemeblyName));
+                        .LoadFromAssemblyPath(Path.Combine(_environment.AppRoot, narikModuleModel.AssemblyName));
                 }
           
 

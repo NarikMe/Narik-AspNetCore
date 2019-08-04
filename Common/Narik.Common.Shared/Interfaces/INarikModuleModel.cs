@@ -3,7 +3,7 @@
     public interface INarikModuleModel
     {
         string Key { get; set; }
-        string AssemeblyName { get; set; }
+        string AssemblyName { get; set; }
         int InitOrder { get; set; }
 
     }

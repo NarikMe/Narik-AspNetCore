@@ -171,14 +171,14 @@ namespace Narik.Common.Web.Infrastructure
             services.AddMvc(o =>
                 {
                     o.AllowCombiningAuthorizeFilters = false;
-                    if (_config.AddDefaultAuthorizeFilter == null || _config.AddDefaultAuthorizeFilter.Value)
+                    if (_config.AddDefaultAuthenticationPolicy == null || _config.AddDefaultAuthenticationPolicy.Value)
                     {
                         var policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
                             .Build();
                         o.Filters.Add(new AuthorizeFilter(policy));
 
-                        //IAuthorizationPolicyProvider d;
+                        
                     }
                     o.Filters.Add(typeof(NarikExceptionFilter));
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)

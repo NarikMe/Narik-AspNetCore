@@ -14,14 +14,14 @@
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/16729513?s=400&amp;v=4</PackageIconUrl>
     <PackageTags>Narik</PackageTags>
     <RepositoryUrl>https://github.com/NarikMe/Narik-AspNetCore</RepositoryUrl>
-    <Description>Nerik Application Block For .Net Core</Description>
+    <Description>Narik Application Block For .Net Core</Description>
     <Company>Narik</Company>
     <Product>Narik</Product>
     <RepositoryType>Github</RepositoryType>
     <PackageLicenseUrl>https://github.com/NarikMe/Narik-AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.0.0.13</AssemblyVersion>
-    <FileVersion>1.0.0.13</FileVersion>
-    <Version>1.0.13</Version>
+    <AssemblyVersion>1.0.0.14</AssemblyVersion>
+    <FileVersion>1.0.0.14</FileVersion>
+    <Version>1.0.14</Version>
     <Authors>Narik</Authors>
   </PropertyGroup>
 
