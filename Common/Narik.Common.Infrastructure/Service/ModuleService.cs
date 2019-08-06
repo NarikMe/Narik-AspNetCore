@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Loader;
 using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -66,8 +67,18 @@ namespace Narik.Common.Infrastructure.Service
             if (narikModuleConfig.Modules!=null)
                 foreach (var narikModuleModel in narikModuleConfig.Modules)
                 {
-                    System.Runtime.Loader.AssemblyLoadContext.Default
+                   AssemblyLoadContext.Default
                         .LoadFromAssemblyPath(Path.Combine(_environment.AppRoot, narikModuleModel.AssemblyName));
+                    if (!string.IsNullOrEmpty(narikModuleModel.Dependencies))
+                    {
+                        var dependencies =
+                            narikModuleModel.Dependencies.Split(",", StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var dependency in dependencies)
+                        {
+                            AssemblyLoadContext.Default
+                                .LoadFromAssemblyPath(Path.Combine(_environment.AppRoot, dependency));
+                        }
+                    }
                 }
           
 

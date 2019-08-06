@@ -11,6 +11,9 @@ namespace Narik.Common.Shared.Models
         [JsonProperty("assemblyName")]
         public string AssemblyName { get; set; }
 
+        [JsonProperty("dependencies")]
+        public string Dependencies { get; set; }
+
         [JsonProperty("initOrder")]
         public int InitOrder { get; set; }
     }
