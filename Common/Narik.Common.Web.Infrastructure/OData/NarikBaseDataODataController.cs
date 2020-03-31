@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using CommonServiceLocator;
 using Narik.Common.Data;
 using Narik.Common.Data.DomainService;
 using Narik.Common.Shared.Interfaces;
@@ -17,8 +18,9 @@ namespace Narik.Common.Web.Infrastructure.OData
         
         protected override List<ChangeSetEntry> MapChangesToDbChanges(BaseDataViewModel entity,List<ChangeSetEntry> changes )
         {
+            var mapper = ServiceLocator.Current.GetInstance<IMapper>();
             return changes.Select(x => new ChangeSetEntry(
-                Mapper.Map<T>(x.Entity), x.Operation, x.ReturnEntity, x.EntityUpdateFiledsInfo)).ToList();
+                mapper.Map<T>(x.Entity), x.Operation, x.ReturnEntity, x.EntityUpdateFiledsInfo)).ToList();
         }
 
         public virtual IQueryable<BaseDataSimpleViewModel> GetForSelector()

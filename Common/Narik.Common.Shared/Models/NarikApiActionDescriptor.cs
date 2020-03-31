@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNet.OData;
 using Narik.Common.Shared.Attributes;
-using Narik.Common.Shared.Constants;
 using Narik.Common.Shared.Interfaces;
 
 namespace Narik.Common.Shared.Models

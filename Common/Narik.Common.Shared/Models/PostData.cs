@@ -1,5 +1,5 @@
 ﻿using Narik.Common.Shared.Interfaces;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Narik.Common.Shared.Models
 {
@@ -18,14 +18,14 @@ namespace Narik.Common.Shared.Models
         where T : class
         where TItem : class
     {
-        [JsonProperty("changes")]
+        [JsonPropertyName("changes")]
         public Change<TItem> Items { get; set; }
     }
 
     public class ChangePostData<T> : IPostData
         where T : class
     {
-        [JsonProperty("items")]
+        [JsonPropertyName("items")]
         public Change<T> Items { get; set; }
 
         public INarikViewModel GetEntity()

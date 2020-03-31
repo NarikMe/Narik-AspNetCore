@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/NarikMe/Narik-AspNetCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/16729513?s=400&amp;v=4</PackageIconUrl>
@@ -19,32 +19,27 @@
     <Product>Narik</Product>
     <RepositoryType>Github</RepositoryType>
     <PackageLicenseUrl>https://github.com/NarikMe/Narik-AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.0.0.12</AssemblyVersion>
-    <FileVersion>1.0.0.12</FileVersion>
-    <Version>1.0.12</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <Version>3.0.0</Version>
     <Authors>Narik</Authors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath></OutputPath>
+    <OutputPath>.\..\..\TestNet3.Web\bin\Debug</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\Common\Narik.Common.Infrastructure\Narik.Common.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Common\Narik.Common.Services\Narik.Common.Services.csproj" />
+    <ProjectReference Include="..\..\Common\Narik.Common.Web.Infrastructure\Narik.Common.Web.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.4.0" />
-    <PackageReference Include="Unity.Abstractions" Version="4.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+   
   </ItemGroup>
 
 

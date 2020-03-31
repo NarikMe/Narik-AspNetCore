@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Narik.Common.Data", "Common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Narik.Modules.Runtime", "Modules\Narik.Modules.Runtime\Narik.Modules.Runtime.csproj", "{279D1373-3CF8-4D8D-9E80-E657376850AF}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utils", "Utils", "{DB9FEEF2-18F9-435F-87DB-0580BF009AE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Unity.Microsoft.DependencyInjection", "Utils\Unity.Microsoft.DependencyInjection\Unity.Microsoft.DependencyInjection.csproj", "{2BFD21F0-21CA-4CBF-8457-408CB6266AEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,10 @@ Global
 		{279D1373-3CF8-4D8D-9E80-E657376850AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{279D1373-3CF8-4D8D-9E80-E657376850AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{279D1373-3CF8-4D8D-9E80-E657376850AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BFD21F0-21CA-4CBF-8457-408CB6266AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFD21F0-21CA-4CBF-8457-408CB6266AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFD21F0-21CA-4CBF-8457-408CB6266AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFD21F0-21CA-4CBF-8457-408CB6266AEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +72,8 @@ Global
 		{EB9C55FF-2CF7-4231-B93D-1D46D784FDAA} = {75BA868A-5A61-4CAA-9830-4FCAA2D55BC1}
 		{D628EE2B-9E4A-473E-9D20-AA7B94765A42} = {75BA868A-5A61-4CAA-9830-4FCAA2D55BC1}
 		{279D1373-3CF8-4D8D-9E80-E657376850AF} = {7F85B194-7F5C-413E-9C71-1FF422155259}
+		{DB9FEEF2-18F9-435F-87DB-0580BF009AE2} = {6612C483-E476-4F2F-AB6A-5509F5D4A3D7}
+		{2BFD21F0-21CA-4CBF-8457-408CB6266AEB} = {DB9FEEF2-18F9-435F-87DB-0580BF009AE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E744064B-C312-4E64-89BC-71A015F4E801}

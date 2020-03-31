@@ -305,7 +305,8 @@ namespace Narik.Common.Web.Infrastructure.OData
 
         protected virtual List<ChangeSetEntry> MapChangesToDbChanges(TViewModel entity, List<ChangeSetEntry> changes)
         {
-            return Mapper.Map<List<ChangeSetEntry>>(changes);
+            var mapper = ServiceLocator.Current.GetInstance<IMapper>();
+            return mapper.Map<List<ChangeSetEntry>>(changes);
         }
 
         protected virtual Action<DbContext, ChangeSet, TViewModel> DoInEnd => null;
@@ -382,7 +383,8 @@ namespace Narik.Common.Web.Infrastructure.OData
 
         protected virtual TViewModel MapPostResultToViewModel(List<ChangeSetEntry> changes, T entity)
         {
-            return Mapper.Map<TViewModel>(entity);
+            var mapper = ServiceLocator.Current.GetInstance<IMapper>();
+            return mapper.Map<TViewModel>(entity);
         }
 
 

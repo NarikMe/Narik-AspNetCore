@@ -2,6 +2,7 @@
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SignalR;
 using Narik.Common.Infrastructure.Interfaces;
 using Narik.Common.Services.Core;
@@ -9,27 +10,28 @@ using Narik.Common.Shared.Models;
 using Narik.Modules.Runtime.Hubs;
 using Narik.Modules.Runtime.Services;
 using Unity;
-using Unity.Injection;
+using Microsoft.AspNetCore.Builder;
 using Unity.Lifetime;
+using Narik.Common.Web.Infrastructure.Interfaces;
 
 namespace Narik.Modules.Runtime
 {
-    public class RuntimeModule:INarikWebModule
+    public class RuntimeModule : INarikWebModule
     {
         private readonly IUnityContainer _unityContainer;
-        
+
         public const string KEY = "Runtime";
         public string Key => KEY;
 
         public RuntimeModule(IUnityContainer container, NarikModulesConfig config)
         {
             _unityContainer = container;
-            container.RegisterType<IUserStore<ApplicationUser>,NarikUserStore>(new ContainerControlledLifetimeManager());
+            container.RegisterType<IUserStore<ApplicationUser>, NarikUserStore>(new ContainerControlledLifetimeManager());
         }
         public void Init()
         {
             var config = _unityContainer.Resolve<NarikModulesConfig>();
-            if (config.AuthenticationMode=="Jwt")
+            if (config.AuthenticationMode == "Jwt")
                 _unityContainer.RegisterType<ILoginService, NarikJwtLoginService>();
             else
                 _unityContainer.RegisterType<ILoginService, NarikDefaultLoginService>();
@@ -50,12 +52,14 @@ namespace Narik.Modules.Runtime
 
         public void RegisterOdataController(ODataModelBuilder builder)
         {
-            
+
         }
 
-        public void RegisterSignalRHubs(HubRouteBuilder routes)
+
+
+        public void RegisterSignalRHubs(IEndpointRouteBuilder configure)
         {
-            routes.MapHub<NarikMessageHub>("/signalr/narikmessages");
+            configure.MapHub<NarikMessageHub>("/signalr/narikmessages");
         }
     }
 }
