@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-
-using System.Data.SqlClient;
 using System.Linq;
-
 using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Query;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Narik.Common.Data;
-using Narik.Common.Infrastructure.Interfaces;
 using Narik.Common.Shared.Interfaces;
 using Narik.Common.Shared.Models;
 

@@ -1,50 +1,50 @@
 ﻿using Narik.Common.Shared.Interfaces;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Narik.Common.Shared.Models
 {
     public class NarikModuleModel:INarikModuleModel
     {
-        [JsonProperty("key")]
+        [JsonPropertyName("key")]
         public string Key { get; set; }
 
-        [JsonProperty("assemblyName")]
+        [JsonPropertyName("assemblyName")]
         public string AssemblyName { get; set; }
 
-        [JsonProperty("dependencies")]
+        [JsonPropertyName("dependencies")]
         public string Dependencies { get; set; }
 
-        [JsonProperty("initOrder")]
+        [JsonPropertyName("initOrder")]
         public int InitOrder { get; set; }
     }
 
     public class NarikModulesConfig
     {
-        [JsonProperty("modules")]
+        [JsonPropertyName("modules")]
         public NarikModuleModel[] Modules { get; set; }
 
-        [JsonProperty("secret")]
+        [JsonPropertyName("secret")]
         public string Secret { get; set; }
 
-        [JsonProperty("useCamelCase")]
+        [JsonPropertyName("useCamelCase")]
         public bool? UseCamelCase { get; set; }
 
-        [JsonProperty("addDefaultAuthenticationPolicy")]
+        [JsonPropertyName("addDefaultAuthenticationPolicy")]
         public bool? AddDefaultAuthenticationPolicy { get; set; }
 
-        [JsonProperty("authenticationMode")]
+        [JsonPropertyName("authenticationMode")]
         public string AuthenticationMode { get; set; }
 
-        [JsonProperty("odataMaxTop")]
+        [JsonPropertyName("odataMaxTop")]
         public int? OdataMaxTop { get; set; }
 
-        [JsonProperty("connectionStringKey")]
+        [JsonPropertyName("connectionStringKey")]
         public string ConnectionStringKey { get; set; }
 
-        [JsonProperty("apiPrefixes")]
+        [JsonPropertyName("apiPrefixes")]
         public string ApiPrefixes { get; set; }
 
-        [JsonProperty("appDirectories")]
+        [JsonPropertyName("appDirectories")]
         public string AppDirectories { get; set; }
     }
 

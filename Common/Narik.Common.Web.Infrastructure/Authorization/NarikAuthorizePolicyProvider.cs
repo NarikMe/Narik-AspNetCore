@@ -61,5 +61,10 @@ namespace Narik.Common.Web.Infrastructure.Authorization
             }
             return FallbackPolicyProvider.GetPolicyAsync(policyName);
         }
+
+        public Task<AuthorizationPolicy> GetFallbackPolicyAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

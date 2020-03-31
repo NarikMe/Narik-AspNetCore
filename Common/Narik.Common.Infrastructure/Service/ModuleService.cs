@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.Loader;
-using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -61,7 +59,7 @@ namespace Narik.Common.Infrastructure.Service
             if (!File.Exists(runTimeAssemblyPath))
                 throw new Exception($"'Runtime Module'  Not Found in {runTimeAssemblyPath}");
             //Load Runtime
-            System.Runtime.Loader.AssemblyLoadContext.Default
+            AssemblyLoadContext.Default
                 .LoadFromAssemblyPath(runTimeAssemblyPath);
 
             if (narikModuleConfig.Modules!=null)

@@ -5,11 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using AutoMapper;
 using CommonServiceLocator;
-using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -32,9 +30,11 @@ using Narik.Common.Web.Infrastructure.Authorization;
 using Narik.Common.Web.Infrastructure.Authorization.ResourceBased;
 using Narik.Common.Web.Infrastructure.Authorization.RoleBased;
 using Narik.Common.Web.Infrastructure.Filters;
-using Newtonsoft.Json.Serialization;
+using Narik.Common.Web.Infrastructure.Interfaces;
 using Unity;
-
+using AutoMapper;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Builder;
 
 namespace Narik.Common.Web.Infrastructure
 {
@@ -46,7 +46,7 @@ namespace Narik.Common.Web.Infrastructure
     public class NarikStarupOptions
     {
         public Dictionary<string, Action<AuthorizationPolicyBuilder>> AuthorizationPolicies { get; set; }
-        public  Func<HttpContext, Task<bool>> NotFoundHandler {set; get; }
+        public Func<HttpContext, Task<bool>> NotFoundHandler { set; get; }
 
     }
     public class NarikStartup
@@ -158,30 +158,24 @@ namespace Narik.Common.Web.Infrastructure
             _unityContainer.Resolve<IEnvironment>().MainAssembly = Assembly.GetExecutingAssembly();
             var moduleService = _unityContainer.Resolve<IModuleService>();
             moduleService.InitModules();
-            AutoMapperConfig.Configure(moduleService);
-
-            services.AddAutoMapper(cfg =>
-                {
-                    cfg.CreateMissingTypeMaps = true;
-                    cfg.ForAllMaps((t, ex) => { ex.PreserveReferences(); });
-                }
-            );
+            AutoMapperConfig.Configure(_unityContainer,services, moduleService);
 
             var modules = _unityContainer.Resolve<IModuleService>().ModuleAssemblies;
-            services.AddMvc(o =>
+            services.AddMvc(mvcOption =>
                 {
-                    o.AllowCombiningAuthorizeFilters = false;
+                    //TODO:CORE_3
+                    //o.AllowCombiningAuthorizeFilters = false;
+
+                    mvcOption.EnableEndpointRouting = false;
                     if (_config.AddDefaultAuthenticationPolicy == null || _config.AddDefaultAuthenticationPolicy.Value)
                     {
                         var policy = new AuthorizationPolicyBuilder()
                             .RequireAuthenticatedUser()
                             .Build();
-                        o.Filters.Add(new AuthorizeFilter(policy));
-
-                        
+                        mvcOption.Filters.Add(new AuthorizeFilter(policy));
                     }
-                    o.Filters.Add(typeof(NarikExceptionFilter));
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                    mvcOption.Filters.Add(typeof(NarikExceptionFilter));
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .ConfigureApplicationPartManager(apm =>
                 {
                     foreach (var pluginAssembly in modules)
@@ -192,7 +186,7 @@ namespace Narik.Common.Web.Infrastructure
                 .AddJsonOptions(opt =>
                 {
                     if (_config.UseCamelCase == null || _config.UseCamelCase.Value)
-                        opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                        opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
             services.AddOData();
@@ -210,11 +204,11 @@ namespace Narik.Common.Web.Infrastructure
 
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
 
-            string[] apiPaths = {};
-            string[] appDirectories = {};
+            string[] apiPaths = { };
+            string[] appDirectories = { };
             if (!string.IsNullOrEmpty(_config.ApiPrefixes))
             {
                 apiPaths = _config.ApiPrefixes.Split(",", StringSplitOptions.RemoveEmptyEntries)
@@ -230,6 +224,7 @@ namespace Narik.Common.Web.Infrastructure
             var logService = container.Resolve<ILoggingService>();
 
             logService.Log("Configure:" + modules.Count);
+            app.UseRouting();
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -249,11 +244,12 @@ namespace Narik.Common.Web.Infrastructure
                 }
             });
 
-            app.UseSignalR(routes =>
+            app.UseEndpoints(configure =>
             {
                 foreach (var module in modules.OfType<INarikWebModule>())
-                    module.RegisterSignalRHubs(routes);
+                    module.RegisterSignalRHubs(configure);
             });
+
             app.UseExceptionHandler(x =>
             {
                 x.Run(async context =>
@@ -271,8 +267,8 @@ namespace Narik.Common.Web.Infrastructure
             app.Run(async (context) =>
             {
                 var handled = false;
-                if (_options?.NotFoundHandler!=null)
-                    handled =await _options.NotFoundHandler(context);
+                if (_options?.NotFoundHandler != null)
+                    handled = await _options.NotFoundHandler(context);
                 if (!handled)
                 {
                     if (!apiPaths.Any(x => context.Request.Path.Value.ToLower().StartsWith(x)))

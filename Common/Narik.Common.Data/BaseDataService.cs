@@ -1,25 +1,24 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using CommonServiceLocator;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
-
 using Narik.Common.Data.DomainService;
 using Narik.Common.Data.Interfaces;
 using Narik.Common.Services.Core;
 using Narik.Common.Shared.Extensions;
 using Narik.Common.Shared.Models;
 using Z.EntityFramework.Plus;
+using Microsoft.EntityFrameworkCore;
+using CommonServiceLocator;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Data.SqlClient;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using System.Linq.Dynamic.Core;
 
 namespace Narik.Common.Data
 {
@@ -30,7 +29,8 @@ namespace Narik.Common.Data
 
         private static readonly ConcurrentDictionary<Type, string> PrimaryKeys = new ConcurrentDictionary<Type, string>();
 
-
+        protected AutoMapper.IConfigurationProvider mapperConfig;
+        protected IMapper mapper;
         private static readonly MethodInfo _updateMethod;
         private static readonly MethodInfo _deleteMethod;
         private static readonly MethodInfo _insertMethod;
@@ -56,6 +56,7 @@ namespace Narik.Common.Data
         protected BaseDataService()
         {
             _cacheService = ServiceLocator.Current.GetInstance<ICacheService>();
+            mapperConfig = ServiceLocator.Current.GetInstance<AutoMapper.IConfigurationProvider>();
             _config = ServiceLocator.Current.GetInstance<NarikModulesConfig>();
             LocalizationService = ServiceLocator.Current.GetInstance<ILocalizationService>();
             _entityUpdatePushService = ServiceLocator.Current.GetInstance<IEntityUpdatePushService>();
@@ -333,11 +334,11 @@ namespace Narik.Common.Data
         public async Task<TViewModel> GetEntityAsync<TModel, TViewModel, TKey>(TKey id, bool useFind = false) where TModel : class
         {
             if (useFind)
-                return Mapper.Map<TModel, TViewModel>(await DbContext.Set<TModel>().FindAsync(id));
+                return mapper.Map<TModel, TViewModel>(await DbContext.Set<TModel>().FindAsync(id));
             var primaryKey = GetPrimaryKey<TModel>();
             return await DbContext.Set<TModel>().Where(string.Format("{0}={2}{1}{2}", primaryKey, id
                 ,typeof(TKey).IsNumeric() ? "":(typeof(TKey)==typeof(char) ? "'":"\"")))
-                .ProjectTo<TViewModel>().FirstOrDefaultAsync();
+                .ProjectTo<TViewModel>(mapperConfig).FirstOrDefaultAsync();
         }
 
         private string GetPrimaryKey<TModel>() where TModel : class
@@ -364,7 +365,7 @@ namespace Narik.Common.Data
                 result = result.Where(where);
             if (!string.IsNullOrEmpty(orderByFiled))
                 result = result.OrderBy(orderByFiled);
-            return result.ProjectTo<TListViewModel>();
+            return result.ProjectTo<TListViewModel>(mapperConfig);
         }
 
 
@@ -427,7 +428,7 @@ namespace Narik.Common.Data
             return Query<TEntity>(withPaging, null, null);
         }
         protected virtual IQueryable<TEntity> Query<TEntity>(bool withPaging, String includes, IQueryable<TEntity> originalQuery)
- where TEntity : Entity, new()
+                where TEntity : Entity, new()
         {
             IQueryable<TEntity> baseQuery = !string.IsNullOrEmpty(includes) ?
                 DbContext.Set<TEntity>().Include(includes).AsNoTracking() : DbContext.Set<TEntity>().AsNoTracking();

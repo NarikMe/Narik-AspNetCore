@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/NarikMe/Narik-AspNetCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/16729513?s=400&amp;v=4</PackageIconUrl>
@@ -19,17 +19,18 @@
     <Product>Narik</Product>
     <RepositoryType>Github</RepositoryType>
     <PackageLicenseUrl>https://github.com/NarikMe/Narik-AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>1.0.0.14</AssemblyVersion>
-    <FileVersion>1.0.0.14</FileVersion>
-    <Version>1.0.14</Version>
+    <AssemblyVersion>3.0.0.0</AssemblyVersion>
+    <FileVersion>3.0.0.0</FileVersion>
+    <Version>3.0.0</Version>
     <Authors>Narik</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.1.0" />
-    <PackageReference Include="NLog" Version="4.5.11" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  
+  <ItemGroup>
+  
   </ItemGroup>
 
 </Project>

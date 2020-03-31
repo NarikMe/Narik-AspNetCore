@@ -2,44 +2,92 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using AutoMapper;
 using CommonServiceLocator;
+using Microsoft.Extensions.DependencyInjection;
 using Narik.Common.Data.DomainService;
 using Narik.Common.Services.Core;
-
+using Unity;
 
 namespace Narik.Common.Infrastructure.Startup
 {
     public static class AutoMapperConfig
     {
-        public static void Configure(IModuleService moduleService)
+        private static bool ImplementsGenericInterface(this Type type, Type interfaceType)
+           => type.IsGenericType(interfaceType) || type.GetTypeInfo().ImplementedInterfaces.Any(@interface => @interface.IsGenericType(interfaceType));
+
+        private static bool IsGenericType(this Type type, Type genericType)
+            => type.GetTypeInfo().IsGenericType && type.GetGenericTypeDefinition() == genericType;
+
+        public static void Configure(IUnityContainer container, IServiceCollection services, IModuleService moduleService)
         {
-            Mapper.Initialize(cfg =>
+            var assembliesToScan = moduleService.ModuleAssemblies.Values;
+
+            var allTypes = assembliesToScan
+                .Where(a => !a.IsDynamic && a.GetName().Name != nameof(AutoMapper))
+                .Distinct() // avoid AutoMapper.DuplicateTypeMapConfigurationException
+                .SelectMany(a => a.DefinedTypes)
+                .ToArray();
+
+            var openTypes = new[]
+           {
+                typeof(IValueResolver<,,>),
+                typeof(IMemberValueResolver<,,,>),
+                typeof(ITypeConverter<,>),
+                typeof(IValueConverter<,>),
+                typeof(IMappingAction<,>)
+            };
+            foreach (var type in openTypes.SelectMany(openType => allTypes
+                .Where(t => t.IsClass
+                    && !t.IsAbstract
+                    && t.AsType().ImplementsGenericInterface(openType))))
             {
-                foreach (var moduleAssembliesValue in moduleService.ModuleAssemblies.Values)
-                    cfg.AddProfiles(moduleAssembliesValue);
+                container.RegisterType(type.AsType());
+            }
 
-                cfg.CreateMissingTypeMaps = true;
-                cfg.ValidateInlineMaps = false;
-
+            var mapperConfiguration=new MapperConfiguration(cfg => {
+                cfg.AddMaps(moduleService.ModuleAssemblies.Values);
+                cfg.ForAllMaps((t, ex) => { ex.PreserveReferences(); });
                 cfg.CreateMap<List<ChangeSetEntry>, List<ChangeSetEntry>>()
                     .ConvertUsing<ChangeSetEntryListConverter>();
+
+                
 
                 cfg.ForAllMaps((t, ex) =>
                 {
                     ex.PreserveReferences();
-                    
-                  //  ex.ReverseMap();
-                  //  ex.ForAllOtherMembers(opt => opt.Ignore());
                 });
             });
+            container.RegisterInstance<IConfigurationProvider>(mapperConfiguration);
+
+            var mapper= new Mapper(mapperConfiguration, ( Type t)=> container.Resolve(t));
+            container.RegisterInstance<IMapper>(mapper);
+            // services.AddAutoMapper(cfg =>
+            // {
+            //     // TODO: CORE_3
+            //     // cfg.CreateMissingTypeMaps = true;
+            //     cfg.AddMaps(moduleService.ModuleAssemblies.Values);
+            //     cfg.ForAllMaps((t, ex) => { ex.PreserveReferences(); });
+            //     cfg.CreateMap<List<ChangeSetEntry>, List<ChangeSetEntry>>()
+            //         .ConvertUsing<ChangeSetEntryListConverter>();
+
+            //     cfg.ForAllMaps((t, ex) =>
+            //     {
+            //         ex.PreserveReferences();
+            //     });
+            // },assemblies:new List<Assembly>(),ServiceLifetime.Singleton
+            //);
+
         }
     }
 
     public class ChangeSetEntryListConverter : ITypeConverter<List<ChangeSetEntry>, List<ChangeSetEntry>>
     {
         private static readonly ConcurrentDictionary<Type, Type> Types = new ConcurrentDictionary<Type, Type>();
-        public List<ChangeSetEntry> Convert(List<ChangeSetEntry> source, List<ChangeSetEntry> destination, ResolutionContext context)
+        public List<ChangeSetEntry> Convert(List<ChangeSetEntry> source,
+            List<ChangeSetEntry> destination, 
+            ResolutionContext context)
         {
             var result = new List<ChangeSetEntry>();
 
@@ -53,7 +101,7 @@ namespace Narik.Common.Infrastructure.Startup
                     destType = Types[entity.GetType()];
                 else
                 {
-                    var destinations = Mapper.Configuration.GetAllTypeMaps()
+                    var destinations = context.Mapper.ConfigurationProvider.GetAllTypeMaps()
                         .Where(t => t.SourceType == entity.GetType()).ToList();
 
                     if (destinations.Count == 0)

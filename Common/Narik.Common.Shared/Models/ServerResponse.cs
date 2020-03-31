@@ -1,21 +1,21 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Narik.Common.Shared.Models
 {
     public class ServerResponse
     {
-        [JsonProperty("isSucceed")]
+        [JsonPropertyName("isSucceed")]
         public bool IsSucceed { get; set; }
-        [JsonProperty("errors")]
+        [JsonPropertyName("errors")]
         public string[] Errors { get; set; }
 
-        [JsonProperty("tag")]
+        [JsonPropertyName("tag")]
         public Object Tag { get; set; }
     }
     public class ServerResponse<T> : ServerResponse
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public T Data { get; set; }
        
         public ServerResponse() : this(true)
