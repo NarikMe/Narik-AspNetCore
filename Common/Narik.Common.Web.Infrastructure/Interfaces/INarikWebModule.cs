@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.OData.ModelBuilder;
 using Narik.Common.Infrastructure.Interfaces;
 
 namespace Narik.Common.Web.Infrastructure.Interfaces

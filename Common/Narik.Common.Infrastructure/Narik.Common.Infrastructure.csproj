@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/NarikMe/Narik-AspNetCore</PackageProjectUrl>
     <PackageIconUrl>https://avatars2.githubusercontent.com/u/16729513?s=400&amp;v=4</PackageIconUrl>
@@ -19,15 +19,15 @@
     <Product>Narik</Product>
     <RepositoryType>Github</RepositoryType>
     <PackageLicenseUrl>https://github.com/NarikMe/Narik-AspNetCore/blob/master/LICENSE</PackageLicenseUrl>
-    <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    <FileVersion>3.0.0.0</FileVersion>
-    <Version>3.0.0</Version>
+    <AssemblyVersion>5.0.0.0</AssemblyVersion>
+    <FileVersion>5.0.0.0</FileVersion>
+    <Version>5.0.0</Version>
     <Authors>Narik</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Unity.Abstractions" Version="5.11.4" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="Unity.Abstractions" Version="5.11.7" />
     <PackageReference Include="Unity.RegistrationByConvention" Version="5.11.1" />
     <PackageReference Include="Unity.ServiceLocation" Version="5.11.1" />
   </ItemGroup>

@@ -32,9 +32,9 @@ using Narik.Common.Web.Infrastructure.Authorization.RoleBased;
 using Narik.Common.Web.Infrastructure.Filters;
 using Narik.Common.Web.Infrastructure.Interfaces;
 using Unity;
-using AutoMapper;
-using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+
 
 namespace Narik.Common.Web.Infrastructure
 {
@@ -189,7 +189,20 @@ namespace Narik.Common.Web.Infrastructure
                         opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 });
 
-            services.AddOData();
+            services.AddControllers().AddOData(opt =>
+            {
+
+                opt.Select().Expand().Filter().OrderBy().SetMaxTop(_config.OdataMaxTop ?? 1000).Count();
+
+                foreach (var module in modules.OfType<INarikWebModule>())
+                {
+                    var builder = new ODataConventionModelBuilder();
+                    if (_config.UseCamelCase == null || _config.UseCamelCase.Value)
+                        builder.EnableLowerCamelCase();
+                    module.RegisterOdataController(builder);
+                    opt.AddRouteComponents("odata/" + module.Key, builder.GetEdmModel());
+                }
+            });
             services.AddSignalR();
 
             services.AddAuthorization(x =>
@@ -232,16 +245,8 @@ namespace Narik.Common.Web.Infrastructure
             {
                 logService.Log("In app.UseMvc:");
                 b.MapRoute("DefaultApi", "api/{controller}/{action}");
-                b.Select().Expand().Filter().OrderBy().MaxTop(_config.OdataMaxTop ?? 1000).Count();
-                foreach (var module in modules.OfType<INarikWebModule>())
-                {
-                    var builder = new ODataConventionModelBuilder();
-                    if (_config.UseCamelCase == null || _config.UseCamelCase.Value)
-                        builder.EnableLowerCamelCase();
-                    logService.Log("RegisterOdataController:" + module.Key);
-                    module.RegisterOdataController(builder);
-                    b.MapODataServiceRoute("odata_" + module.Key, "odata/" + module.Key, builder.GetEdmModel());
-                }
+               
+                
             });
 
             app.UseEndpoints(configure =>

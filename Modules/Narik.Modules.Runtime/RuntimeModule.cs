@@ -1,16 +1,13 @@
 ﻿
-using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.SignalR;
-using Narik.Common.Infrastructure.Interfaces;
 using Narik.Common.Services.Core;
 using Narik.Common.Shared.Models;
 using Narik.Modules.Runtime.Hubs;
 using Narik.Modules.Runtime.Services;
 using Unity;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.OData.ModelBuilder;
 using Unity.Lifetime;
 using Narik.Common.Web.Infrastructure.Interfaces;
 

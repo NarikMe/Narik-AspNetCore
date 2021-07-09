@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNetCore.Mvc;
-using Narik.Common.Data;
-using Narik.Common.Data.DomainService;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.OData.ModelBuilder;
 using Narik.Common.Shared.Attributes;
-using Narik.Common.Shared.Interfaces;
 using Narik.Common.Shared.Models;
 
 namespace Narik.Common.Web.Infrastructure.OData

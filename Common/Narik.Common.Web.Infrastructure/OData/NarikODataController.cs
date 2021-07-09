@@ -4,17 +4,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using AutoMapper;
 using CommonServiceLocator;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Narik.Common.Data;
 using Narik.Common.Data.DomainService;
 using Narik.Common.Services.Core;
-using Narik.Common.Shared.Constants;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Query;
 using Narik.Common.Shared.Interfaces;
 using Narik.Common.Shared.Models;
 

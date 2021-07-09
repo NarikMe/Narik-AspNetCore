@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Query;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Results;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Narik.Common.Data;
