@@ -46,102 +46,96 @@ namespace Narik.Common.Infrastructure.Startup
                 container.RegisterType(type.AsType());
             }
 
-            var mapperConfiguration=new MapperConfiguration(cfg => {
+            var mapperConfiguration = new MapperConfiguration(cfg =>
+            {
                 cfg.AddMaps(moduleService.ModuleAssemblies.Values);
                 cfg.ForAllMaps((t, ex) => { ex.PreserveReferences(); });
 
-                //TODO: NET_CORE_5
-                //cfg.CreateMap<List<ChangeSetEntry>, List<ChangeSetEntry>>()
-                //    .ConvertUsing<ChangeSetEntryListConverter>();
+                cfg.CreateMap<List<ChangeSetEntry>, List<ChangeSetEntry>>()
+                    .ConvertUsing<ChangeSetEntryListConverter>();
 
-                
+
+                cfg.CreateMap<ResolutionContext, IUnityContainer>().ConvertUsing((r, c) => container);
 
                 cfg.ForAllMaps((t, ex) =>
                 {
                     ex.PreserveReferences();
                 });
+
             });
             container.RegisterInstance<IConfigurationProvider>(mapperConfiguration);
 
-            var mapper= new Mapper(mapperConfiguration, ( Type t)=> container.Resolve(t));
+            var mapper = new Mapper(mapperConfiguration, (Type t) => container.Resolve(t));
+            mapper.ConfigurationProvider.GetAllTypeMaps();
             container.RegisterInstance<IMapper>(mapper);
-            // services.AddAutoMapper(cfg =>
-            // {
-            //     // TODO: CORE_3
-            //     // cfg.CreateMissingTypeMaps = true;
-            //     cfg.AddMaps(moduleService.ModuleAssemblies.Values);
-            //     cfg.ForAllMaps((t, ex) => { ex.PreserveReferences(); });
-            //     cfg.CreateMap<List<ChangeSetEntry>, List<ChangeSetEntry>>()
-            //         .ConvertUsing<ChangeSetEntryListConverter>();
-
-            //     cfg.ForAllMaps((t, ex) =>
-            //     {
-            //         ex.PreserveReferences();
-            //     });
-            // },assemblies:new List<Assembly>(),ServiceLifetime.Singleton
-            //);
-
         }
     }
     //TODO: NET_CORE_5
-    //    public class ChangeSetEntryListConverter : ITypeConverter<List<ChangeSetEntry>, List<ChangeSetEntry>>
-    //    {
-    //        private static readonly ConcurrentDictionary<Type, Type> Types = new ConcurrentDictionary<Type, Type>();
-    //        public List<ChangeSetEntry> Convert(List<ChangeSetEntry> source,
-    //            List<ChangeSetEntry> destination, 
-    //            ResolutionContext context)
-    //        {
-    //            var result = new List<ChangeSetEntry>();
+    public class ChangeSetEntryListConverter : ITypeConverter<List<ChangeSetEntry>, List<ChangeSetEntry>>
+    {
+        private static readonly ConcurrentDictionary<Type, Type> Types = new ConcurrentDictionary<Type, Type>();
+        public List<ChangeSetEntry> Convert(List<ChangeSetEntry> source,
+            List<ChangeSetEntry> destination,
+            ResolutionContext context)
+        {
+            var result = new List<ChangeSetEntry>();
 
-    //            var newContext = new ResolutionContext(context.Options, context.Mapper);
-    //            foreach (var changeSetEntry in source)
-    //            {
-    //                Type destType;
-    //                var entity = changeSetEntry.Entity;
+            var container = context.Mapper.Map(context, typeof(ResolutionContext), typeof(IUnityContainer)) as IUnityContainer;
+            var mapperConfiguration = container.Resolve<IConfigurationProvider>();
 
-    //                if (Types.ContainsKey(entity.GetType()))
-    //                    destType = Types[entity.GetType()];
-    //                else
-    //                {
-    //                    var destinations = context.Mapper.ConfigurationProvider.GetAllTypeMaps()
-    //                        .Where(t => t.SourceType == entity.GetType()).ToList();
+            foreach (var changeSetEntry in source)
+            {
+                Type destType;
+                var entity = changeSetEntry.Entity;
 
-    //                    if (destinations.Count == 0)
-    //                    {
-    //                        var environment = ServiceLocator.Current.GetInstance<IEnvironment>();
-    //                        var destType0 = (
-    //                            from assembly in environment.ModelAssemblies
-    //                            from type in assembly.GetTypes()
-    //                            where type.Name == entity.GetType().Name.Replace("ViewModel", "")
-    //                            select type).FirstOrDefault();
-    //                        if (destType0 != null)
-    //                            destType = destType0;
-    //                        else
-    //                            throw new Exception("Mapping not found for " + entity.GetType());
-    //                    }
-    //                    else
-    //                        destType = destinations.FirstOrDefault()?.DestinationType;
-    //                    Types.TryAdd(entity.GetType(), destType);
-    //                }
-    //                try
-    //                {
-    //                    var resultEntity = context.Mapper.Map(entity, null, entity.GetType(), destType, newContext);
-    //                    var resultItem = new ChangeSetEntry
-    //                    {
-    //                        Entity = resultEntity,
-    //                        Operation = changeSetEntry.Operation,
-    //                        ReturnEntity = changeSetEntry.ReturnEntity,
-    //                        EntityUpdateFiledsInfo = changeSetEntry.EntityUpdateFiledsInfo
-    //                    };
-    //                    result.Add(resultItem);
-    //                }
-    //                catch
-    //                {
-    //                    throw;
-    //                }
+                if (Types.ContainsKey(entity.GetType()))
+                    destType = Types[entity.GetType()];
+                else
+                {
+                    
+                    var destinations = mapperConfiguration.GetAllTypeMaps()
+                        .Where(t => t.SourceType == entity.GetType()).ToList();
 
-    //            }
-    //            return result;
-    //        }
-    //    }
+                    if (destinations.Count == 0)
+                    {
+                        var environment = ServiceLocator.Current.GetInstance<IEnvironment>();
+                        var destType0 = (
+                            from assembly in environment.ModelAssemblies
+                            from type in assembly.GetTypes()
+                            where type.Name == entity.GetType().Name.Replace("ViewModel", "")
+                            select type).FirstOrDefault();
+                        if (destType0 != null)
+                            destType = destType0;
+                        else
+                            throw new Exception("Mapping not found for " + entity.GetType());
+                    }
+                    else
+                        destType = destinations.FirstOrDefault()?.DestinationType;
+                    Types.TryAdd(entity.GetType(), destType);
+                }
+                try
+                {
+
+                    //var newContext = new ResolutionContext(context.Options, context.Mapper);
+                    // var resultEntity = context.Mapper.Map(entity, null, entity.GetType(), destType, newContext);
+                    //context.InstanceCache
+                    var resultEntity = context.Mapper.Map(entity, entity.GetType(), destType);
+                    var resultItem = new ChangeSetEntry
+                    {
+                        Entity = resultEntity,
+                        Operation = changeSetEntry.Operation,
+                        ReturnEntity = changeSetEntry.ReturnEntity,
+                        EntityUpdateFiledsInfo = changeSetEntry.EntityUpdateFiledsInfo
+                    };
+                    result.Add(resultItem);
+                }
+                catch
+                {
+                    throw;
+                }
+
+            }
+            return result;
+        }
+    }
 }

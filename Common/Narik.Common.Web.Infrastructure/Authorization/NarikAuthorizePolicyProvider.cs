@@ -8,11 +8,12 @@ using Narik.Common.Web.Infrastructure.Authorization.RoleBased;
 
 namespace Narik.Common.Web.Infrastructure.Authorization
 {
-    internal class NarikAuhtorizePolicyProvider : IAuthorizationPolicyProvider
+    internal class NarikAuthorizationPolicyProvider : IAuthorizationPolicyProvider
     {
         public DefaultAuthorizationPolicyProvider FallbackPolicyProvider { get; }
        
-        public NarikAuhtorizePolicyProvider(IOptions<AuthorizationOptions> options)
+       
+        public NarikAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
         {
             FallbackPolicyProvider = new DefaultAuthorizationPolicyProvider(options);
         }
@@ -33,7 +34,7 @@ namespace Narik.Common.Web.Infrastructure.Authorization
 
                 var roles = policyName.Substring(prefixLen);
                 var rolesSplit = roles?.Split(',');
-                if (rolesSplit != null && rolesSplit.Any())
+                if (rolesSplit.Any())
                 {
                     var trimmedRolesSplit = rolesSplit.Where(r => !string.IsNullOrWhiteSpace(r)).Select(r => r.Trim());
                     policyBuilder.AddRequirements(new NarikRoleRequirement(trimmedRolesSplit,
@@ -64,7 +65,7 @@ namespace Narik.Common.Web.Infrastructure.Authorization
 
         public Task<AuthorizationPolicy> GetFallbackPolicyAsync()
         {
-            throw new NotImplementedException();
+            return FallbackPolicyProvider.GetFallbackPolicyAsync();
         }
     }
 }

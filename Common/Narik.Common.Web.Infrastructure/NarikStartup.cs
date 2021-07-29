@@ -90,15 +90,6 @@ namespace Narik.Common.Web.Infrastructure
         {
             Init(services);
 
-            //services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
-            //{
-            //    builder
-            //        .AllowAnyMethod()
-            //        .AllowAnyHeader()
-            //        .AllowAnyOrigin()
-            //        .AllowCredentials();
-            //}));
-
             var key = Encoding.ASCII.GetBytes(_config.Secret);
 
             services.AddIdentityCore<ApplicationUser>(o =>
@@ -150,7 +141,7 @@ namespace Narik.Common.Web.Infrastructure
             }
 
 
-            services.AddSingleton<IAuthorizationPolicyProvider, NarikAuhtorizePolicyProvider>();
+            services.AddSingleton<IAuthorizationPolicyProvider, NarikAuthorizationPolicyProvider>();
             services.AddSingleton<IAuthorizationHandler, NarikRoleAuthorizationHandler>();
             services.AddTransient<IAuthorizationHandler, NarikResourceAuthorizationHandler>();
 
@@ -160,7 +151,7 @@ namespace Narik.Common.Web.Infrastructure
             moduleService.InitModules();
             AutoMapperConfig.Configure(_unityContainer,services, moduleService);
 
-            var modules = _unityContainer.Resolve<IModuleService>().ModuleAssemblies;
+           
             services.AddMvc(mvcOption =>
                 {
                     //TODO:CORE_3
@@ -175,9 +166,10 @@ namespace Narik.Common.Web.Infrastructure
                         mvcOption.Filters.Add(new AuthorizeFilter(policy));
                     }
                     mvcOption.Filters.Add(typeof(NarikExceptionFilter));
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                }).SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .ConfigureApplicationPartManager(apm =>
                 {
+                    var modules = _unityContainer.Resolve<IModuleService>().ModuleAssemblies;
                     foreach (var pluginAssembly in modules)
                     {
                         apm.ApplicationParts.Add(new AssemblyPart(pluginAssembly.Value));
@@ -191,10 +183,10 @@ namespace Narik.Common.Web.Infrastructure
 
             services.AddControllers().AddOData(opt =>
             {
-
                 opt.Select().Expand().Filter().OrderBy().SetMaxTop(_config.OdataMaxTop ?? 1000).Count();
 
-                foreach (var module in modules.OfType<INarikWebModule>())
+                var narikModules = _unityContainer.ResolveAll<INarikModule>().ToList();
+                foreach (var module in narikModules.OfType<INarikWebModule>())
                 {
                     var builder = new ODataConventionModelBuilder();
                     if (_config.UseCamelCase == null || _config.UseCamelCase.Value)
@@ -203,6 +195,8 @@ namespace Narik.Common.Web.Infrastructure
                     opt.AddRouteComponents("odata/" + module.Key, builder.GetEdmModel());
                 }
             });
+
+            
             services.AddSignalR();
 
             services.AddAuthorization(x =>
@@ -243,16 +237,14 @@ namespace Narik.Common.Web.Infrastructure
             app.UseStaticFiles();
             app.UseMvc(b =>
             {
-                logService.Log("In app.UseMvc:");
                 b.MapRoute("DefaultApi", "api/{controller}/{action}");
-               
-                
             });
 
-            app.UseEndpoints(configure =>
+            app.UseEndpoints(endPoints =>
             {
+                endPoints.MapControllers();
                 foreach (var module in modules.OfType<INarikWebModule>())
-                    module.RegisterSignalRHubs(configure);
+                    module.RegisterSignalRHubs(endPoints);
             });
 
             app.UseExceptionHandler(x =>

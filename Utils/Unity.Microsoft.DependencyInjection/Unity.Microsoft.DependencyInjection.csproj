@@ -21,7 +21,7 @@
 
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>Full</DebugType>
   </PropertyGroup>
